@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "id": "com.auto-planning.schedule",
+  "version": "0.1.0",
+  "name": "AutoPlanning",
+  "description": "为角色扮演 AI 自动生成每日日程，并在回复时注入当前时间附近的日程上下文，提升角色扮演真实感",
+  "author": {
+    "name": "Natural-Selectionn",
+    "url": "https://github.com/Natural-Selectionn"
+  },
+  "license": "MIT",
+  "urls": {
+    "repository": "https://github.com/Natural-Selectionn/maibot-auto-planning-plugin",
+    "homepage": "https://github.com/Natural-Selectionn/maibot-auto-planning-plugin",
+    "documentation": "https://github.com/Natural-Selectionn/maibot-auto-planning-plugin",
+    "issues": "https://github.com/Natural-Selectionn/maibot-auto-planning-plugin/issues"
+  },
+  "host_application": {
+    "min_version": "1.0.0",
+    "max_version": "1.99.99"
+  },
+  "sdk": {
+    "min_version": "2.4.0",
+    "max_version": "2.99.99"
+  },
+  "dependencies": [],
+  "capabilities": [
+    "chat.get_all_streams",
+    "llm.generate",
+    "knowledge.search",
+    "message.get_by_time_in_chat",
+    "config.get"
+  ],
+  "i18n": {
+    "default_locale": "zh-CN"
+  }
+}

@@ -1,0 +1,6 @@
+__pycache__/
+schedules/
+llm_logs/
+config_back/
+*.pyc
+.DS_Store
