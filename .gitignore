@@ -2,5 +2,6 @@ __pycache__/
 schedules/
 llm_logs/
 config_back/
+config.toml
 *.pyc
 .DS_Store

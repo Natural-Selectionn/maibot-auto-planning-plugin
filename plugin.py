@@ -115,6 +115,10 @@ def _build_readable_history(messages: list[Any], limit: int) -> str:
     return "\n".join(lines)
 
 
+def _is_plugin_enabled(config: AutoPlanningConfig | None) -> bool:
+    return bool(config and config.plugin.enabled)
+
+
 class AutoPlanningPlugin(MaiBotPlugin):
     config_model = AutoPlanningConfig
 
@@ -182,7 +186,7 @@ class AutoPlanningPlugin(MaiBotPlugin):
         if self.config is None:
             return
         cfg = self.config.schedule
-        if not cfg.enabled:
+        if not _is_plugin_enabled(self.config):
             return
 
         now = datetime.now()
@@ -461,7 +465,7 @@ class AutoPlanningPlugin(MaiBotPlugin):
         self, **kwargs: Any
     ) -> dict[str, Any]:
         config = self.config
-        if config is None or not config.schedule.enabled:
+        if not _is_plugin_enabled(config):
             return {"action": "continue"}
 
         raw_tool_calls = kwargs.get("tool_calls")
@@ -498,7 +502,7 @@ class AutoPlanningPlugin(MaiBotPlugin):
         del kwargs
         if not stream_id:
             return True, "无法获取当前聊天流", 0
-        if self.config is None or not self.config.schedule.enabled:
+        if not _is_plugin_enabled(self.config):
             return True, "日程生成功能未启用", 0
         if not await self._is_session_enabled(stream_id):
             return True, "当前聊天流未在 AutoPlanning 白名单中启用", 0
@@ -527,6 +531,8 @@ class AutoPlanningPlugin(MaiBotPlugin):
         ],
     )
     async def handle_query_schedule(self, date: str, session_id: str = "", **kwargs: Any) -> dict[str, Any]:
+        if not _is_plugin_enabled(self.config):
+            return {"success": True, "schedule": "AutoPlanning 已禁用"}
         session_id = _resolve_tool_stream_id(session_id, kwargs)
         if not session_id:
             return {"success": False, "error": "无法获取当前聊天流"}
@@ -588,8 +594,8 @@ class AutoPlanningPlugin(MaiBotPlugin):
         ],
     )
     async def handle_update_schedule(self, description: str, session_id: str = "", **kwargs: Any) -> dict[str, Any]:
-        if self.config is None:
-            return {"success": False, "error": "插件未配置"}
+        if not _is_plugin_enabled(self.config):
+            return {"success": False, "error": "AutoPlanning 已禁用"}
         session_id = _resolve_tool_stream_id(session_id, kwargs)
         if not session_id:
             return {"success": False, "error": "无法获取当前聊天流"}

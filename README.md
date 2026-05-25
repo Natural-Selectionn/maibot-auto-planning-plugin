@@ -14,13 +14,19 @@
 
 ## 配置说明
 
-插件安装后可在麦麦配置界面中调整以下参数：
+插件安装后可在麦麦配置界面中调整以下参数。真实运行配置为本地 `config.toml`，由 MaiBot Runner/WebUI 自动生成和更新；仓库中的 `config.example.toml` 仅作为范例，避免升级时覆盖用户设置。
+
+从旧版本升级时，如果 `git pull` 提示本地 `config.toml` 会被覆盖，请先删除当前 `config.toml`。
+### 插件基础配置
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `enabled` | `true` | 是否启用插件功能 |
 
 ### 日程生成
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `enabled` | `true` | 是否启用 |
 | `allowed_streams` | `[]` | 聊天流白名单，支持 `all`、`session:<id>`、`<platform>:group:<id>`、`<platform>:private:<id>` |
 | `generation_time` | `01:30` | 每日自动生成时间 |
 | `persona_source` | `both` | 人设来源：`system`采用maibot的设置 / `extra` 采用插件的设置 / `both` 按顺序拼接前两者|

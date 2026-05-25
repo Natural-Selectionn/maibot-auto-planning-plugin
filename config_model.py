@@ -8,7 +8,8 @@ class PluginSection(PluginConfigBase):
     __ui_icon__ = "package"
     __ui_order__ = 0
 
-    config_version: str = Field(default="0.3.0", description="配置版本")
+    config_version: str = Field(default="0.3.2", description="配置版本")
+    enabled: bool = Field(default=True, description="是否启用自动日程生成")
 
 
 class ScheduleSection(PluginConfigBase):
@@ -16,7 +17,6 @@ class ScheduleSection(PluginConfigBase):
 
     __ui_label__ = "日程生成"
 
-    enabled: bool = Field(default=True, description="是否启用自动日程生成")
     allowed_streams: list[str] = Field(
         default_factory=list,
         description="启用日程的聊天流白名单。支持 all、session:<session_id>、<platform>:group:<group_id>、<platform>:private:<user_id>",
