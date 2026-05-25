@@ -9,7 +9,7 @@ class PluginSection(PluginConfigBase):
     __ui_order__ = 0
 
     config_version: str = Field(default="0.3.2", description="配置版本")
-    enabled: bool = Field(default=True, description="是否启用自动日程生成")
+    enabled: bool = Field(default=True, description="是否启用插件全部功能")
 
 
 class ScheduleSection(PluginConfigBase):

@@ -183,11 +183,10 @@ class AutoPlanningPlugin(MaiBotPlugin):
             await asyncio.sleep(60)
 
     async def _scheduler_tick(self) -> None:
-        if self.config is None:
+        config = self.config
+        if not _is_plugin_enabled(config):
             return
-        cfg = self.config.schedule
-        if not _is_plugin_enabled(self.config):
-            return
+        cfg = config.schedule
 
         now = datetime.now()
         generation_time = _parse_generation_time(cfg.generation_time)
@@ -237,9 +236,10 @@ class AutoPlanningPlugin(MaiBotPlugin):
                 logger.exception("聊天流日程生成失败: session=%s", session_id)
 
     async def _generate_for_session(self, session_id: str, stream_info: dict[str, Any] | None = None) -> None:
-        if self.config is None:
+        config = self.config
+        if not _is_plugin_enabled(config):
             return
-        cfg = self.config.schedule
+        cfg = config.schedule
 
         persona = await self._resolve_persona()
         if stream_info is None:
@@ -377,9 +377,10 @@ class AutoPlanningPlugin(MaiBotPlugin):
         return str(readable or "").strip()
 
     async def _resolve_enabled_streams(self) -> list[dict[str, Any]]:
-        if self.config is None:
+        config = self.config
+        if not _is_plugin_enabled(config):
             return []
-        cfg = self.config.schedule
+        cfg = config.schedule
         raw_entries = [_normalize_text(item) for item in cfg.allowed_streams]
         entries = [item for item in raw_entries if item]
         if not entries:
@@ -594,8 +595,8 @@ class AutoPlanningPlugin(MaiBotPlugin):
         ],
     )
     async def handle_update_schedule(self, description: str, session_id: str = "", **kwargs: Any) -> dict[str, Any]:
-        if not _is_plugin_enabled(self.config):
-            return {"success": False, "error": "AutoPlanning 已禁用"}
+        if self.config is None:
+            return {"success": False, "error": "插件未配置"}
         session_id = _resolve_tool_stream_id(session_id, kwargs)
         if not session_id:
             return {"success": False, "error": "无法获取当前聊天流"}
@@ -606,7 +607,7 @@ class AutoPlanningPlugin(MaiBotPlugin):
         if not description:
             return {"success": False, "error": "描述不能为空"}
 
-        cfg = self.config.schedule
+        cfg = config.schedule
         persona = await self._resolve_persona()
 
         async def _do_generate(merged_description: str) -> None:

@@ -14,14 +14,15 @@
 
 ## 配置说明
 
-插件安装后可在麦麦配置界面中调整以下参数。真实运行配置为本地 `config.toml`，由 MaiBot Runner/WebUI 自动生成和更新；仓库中的 `config.example.toml` 仅作为范例，避免升级时覆盖用户设置。
+插件安装后可在麦麦配置界面中调整以下参数。真实运行配置为本地 `config.toml`，由 MaiBot 自动生成和更新；仓库中的 `config.example.toml` 仅作为范例，避免升级时覆盖用户设置。
 
-从旧版本升级时，如果 `git pull` 提示本地 `config.toml` 会被覆盖，请先删除当前 `config.toml`。
+从旧版本升级时，如果 `git pull` 提示本地 `config.toml` 会被覆盖，请先备份当前 `config.toml`，更新后再放回插件目录（或直接删除）。
+
 ### 插件基础配置
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `enabled` | `true` | 是否启用插件功能 |
+| `enabled` | `true` | 是否启用插件全部功能 |
 
 ### 日程生成
 
