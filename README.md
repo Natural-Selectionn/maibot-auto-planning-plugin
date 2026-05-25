@@ -47,6 +47,10 @@
 |------|------|
 | `/generate_schedule` | 手动触发当天日程生成 |
 
+## debug
+- ./llm_logs : 调用llm的记录，可以查看生成状态，提示词，以及输出结果
+- ./schedules : 日程的储存文件夹
+
 ## 依赖
 
 - MaiBot SDK >= 2.4.0
