@@ -8,7 +8,7 @@ class PluginSection(PluginConfigBase):
     __ui_icon__ = "package"
     __ui_order__ = 0
 
-    config_version: str = Field(default="0.2.0", description="配置版本")
+    config_version: str = Field(default="0.3.0", description="配置版本")
 
 
 class ScheduleSection(PluginConfigBase):
@@ -48,7 +48,8 @@ class ScheduleSection(PluginConfigBase):
     activity_count_max: int = Field(default=14, description="每日活动数量上限")
     wake_time: str = Field(default="08:30", description="角色苏醒时间 (HH:MM)")
     sleep_time: str = Field(default="01:00", description="角色入睡时间 (HH:MM)")
-    history_message_limit: int = Field(default=30, description="生成日程时读取的当天最近消息条数")
+    history_message_limit: int = Field(default=30, description="生成日程时读取的最近消息条数")
+    history_window_hours: int = Field(default=24, description="生成日程时读取最近多少小时内的聊天消息")
     knowledge_search_limit: int = Field(default=5, description="生成日程时检索当前聊天流相关记忆的条数")
 
 

@@ -10,6 +10,7 @@
 - **日程更新工具**：当用户邀请角色做某事时，通过 `update_schedule` 工具角色会根据人设和当前日程判断是否接受
 - **跨天活动支持**：支持凌晨跨天的睡眠/活动，昨天的跨天尾项不会在今天的日程中重复
 - **未来预约**：用户可预约未来某天的活动，生成当天日程时自动纳入
+- **聊天流隔离**：针对每个群聊的上下文和未来预约，生成独立的日程
 
 ## 配置说明
 
@@ -29,7 +30,8 @@
 | `activity_count_max` | `14` | 每日活动最多数量 |
 | `schedule_generation_model` | `""` | 生成日程使用的模型（如 planner replyer 建议速度快的模型）|
 | `extra_generation_prompt` | `""` | 注入日程生成的额外提示词，在`system`下无效 |
-| `history_message_limit` | `30` | 生成时读取当天最近消息条数 |
+| `history_message_limit` | `30` | 生成时最多读取的最近消息条数 |
+| `history_window_hours` | `24` | 生成时读取最近多少小时内的聊天消息 |
 | `knowledge_search_limit` | `5` | 检索相关记忆的条数 |
 
 ### replyer提示词注入策略

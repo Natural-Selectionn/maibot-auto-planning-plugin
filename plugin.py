@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, time
+from datetime import datetime, timedelta, time
 from typing import Any
 
 from maibot_sdk import Command, HookHandler, MaiBotPlugin, Tool
@@ -17,6 +17,7 @@ from maibot_sdk.types import (
 from . import schedule_engine, schedule_store
 from .config_model import AutoPlanningConfig
 from .injector import inject_schedule_into_reply
+from .schema_i18n import apply_config_schema_i18n
 
 logger = logging.getLogger(__name__)
 
@@ -34,9 +35,9 @@ def _resolve_tool_stream_id(explicit_session_id: str, kwargs: dict[str, Any]) ->
     )
 
 
-def _today_bounds() -> tuple[float, float]:
+def _recent_bounds(hours: int) -> tuple[float, float]:
     now = datetime.now()
-    start = datetime.combine(now.date(), time.min)
+    start = now - timedelta(hours=max(1, int(hours)))
     return start.timestamp(), now.timestamp()
 
 
@@ -118,6 +119,25 @@ class AutoPlanningPlugin(MaiBotPlugin):
     config_model = AutoPlanningConfig
 
     # ── 生命周期 ──────────────────────────────────────────
+
+    @classmethod
+    def build_config_schema(
+        cls,
+        *,
+        plugin_id: str = "",
+        plugin_name: str = "",
+        plugin_version: str = "",
+        plugin_description: str = "",
+        plugin_author: str = "",
+    ) -> dict[str, object]:
+        schema = super().build_config_schema(
+            plugin_id=plugin_id,
+            plugin_name=plugin_name,
+            plugin_version=plugin_version,
+            plugin_description=plugin_description,
+            plugin_author=plugin_author,
+        )
+        return apply_config_schema_i18n(schema)
 
     async def on_load(self) -> None:
         self._scheduler_task: asyncio.Task[None] | None = None
@@ -272,29 +292,51 @@ class AutoPlanningPlugin(MaiBotPlugin):
         if self.config is None:
             return ""
         cfg = self.config.schedule
+        try:
+            limit = max(0, int(cfg.knowledge_search_limit))
+        except (TypeError, ValueError):
+            limit = 0
+        if limit <= 0:
+            return ""
+
         terms = [
             "角色最近的习惯",
             "角色偏好",
             "日程相关约定",
             "当前聊天流发生的事件",
         ]
-        scope_bits = [f"聊天流ID:{session_id}"]
+        group_id = ""
+        user_id = ""
         if stream_info:
-            if stream_info.get("platform"):
-                scope_bits.append(f"平台:{stream_info.get('platform')}")
             if stream_info.get("group_id"):
-                scope_bits.append(f"群号:{stream_info.get('group_id')}")
+                group_id = _normalize_text(stream_info.get("group_id"))
             if stream_info.get("user_id"):
-                scope_bits.append(f"用户账号:{stream_info.get('user_id')}")
-        query = "；".join(scope_bits + terms)
+                user_id = _normalize_text(stream_info.get("user_id"))
+        query = "；".join(terms)
         try:
-            result = await self.ctx.knowledge.search(
-                query,
-                limit=max(1, int(cfg.knowledge_search_limit)),
-            )
+            call_capability = getattr(self.ctx, "call_capability", None)
+            if callable(call_capability):
+                result = await call_capability(
+                    "knowledge.search",
+                    query=query,
+                    limit=limit,
+                    mode="aggregate",
+                    chat_id=session_id,
+                    group_id=group_id,
+                    user_id=user_id,
+                    respect_filter=True,
+                )
+            else:
+                result = await self.ctx.knowledge.search(query, limit=limit)
         except Exception:
             logger.debug("知识库检索失败，日程生成将不携带记忆上下文")
             return ""
+
+        if isinstance(result, dict):
+            if result.get("success") is False:
+                logger.debug("知识库检索返回失败，日程生成将不携带记忆上下文: %s", result.get("error", ""))
+                return ""
+            result = result.get("content", "")
         return str(result or "").strip()
 
     async def _resolve_history_context(self, session_id: str) -> str:
@@ -303,7 +345,11 @@ class AutoPlanningPlugin(MaiBotPlugin):
         limit = max(0, int(self.config.schedule.history_message_limit))
         if limit <= 0:
             return ""
-        start_ts, end_ts = _today_bounds()
+        try:
+            window_hours = max(1, int(self.config.schedule.history_window_hours))
+        except (TypeError, ValueError):
+            window_hours = 24
+        start_ts, end_ts = _recent_bounds(window_hours)
         try:
             messages = await self.ctx.message.get_by_time_in_chat(
                 session_id,

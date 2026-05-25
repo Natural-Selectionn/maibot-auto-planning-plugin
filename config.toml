@@ -2,7 +2,7 @@
 
 [plugin]
 # 配置版本
-config_version = "0.2.0"
+config_version = "0.3.0"
 
 [schedule]
 # 是否启用自动日程生成
@@ -35,8 +35,10 @@ activity_count_max = 14
 wake_time = "08:30"
 # 角色入睡时间 (HH:MM)
 sleep_time = "01:00"
-# 生成日程时读取的当天最近消息条数
+# 生成日程时读取的最近消息条数
 history_message_limit = 30
+# 生成日程时读取最近多少小时内的聊天消息
+history_window_hours = 24
 # 生成日程时检索当前聊天流相关记忆的条数
 knowledge_search_limit = 5
 
