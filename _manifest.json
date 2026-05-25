@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "id": "com.auto-planning.schedule",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "name": "AutoPlanning",
   "description": "为角色扮演 AI 自动生成每日日程，并在回复时注入当前时间附近的日程上下文，提升角色扮演真实感",
   "author": {
