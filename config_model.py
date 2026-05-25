@@ -8,7 +8,8 @@ class PluginSection(PluginConfigBase):
     __ui_icon__ = "package"
     __ui_order__ = 0
 
-    config_version: str = Field(default="0.3.0", description="配置版本")
+    config_version: str = Field(default="0.3.2", description="配置版本")
+    enabled: bool = Field(default=True, description="是否启用插件全部功能")
 
 
 class ScheduleSection(PluginConfigBase):
@@ -16,7 +17,6 @@ class ScheduleSection(PluginConfigBase):
 
     __ui_label__ = "日程生成"
 
-    enabled: bool = Field(default=True, description="是否启用自动日程生成")
     allowed_streams: list[str] = Field(
         default_factory=list,
         description="启用日程的聊天流白名单。支持 all、session:<session_id>、<platform>:group:<group_id>、<platform>:private:<user_id>",
@@ -31,7 +31,7 @@ class ScheduleSection(PluginConfigBase):
         json_schema_extra={"placeholder": "01:30"},
     )
     schedule_generation_model: str = Field(
-        default="",
+        default="planner",
         description="生成日程使用的模型任务名，空字符串表示使用默认模型",
     )
     persona_source: str = Field(
@@ -43,7 +43,7 @@ class ScheduleSection(PluginConfigBase):
         description="注入到日程生成 prompt 中的额外提示词",
         json_schema_extra={"x-widget": "textarea"},
     )
-    max_tokens: int = Field(default=16000, description="日程生成 LLM 的最大输出 token 数")
+    max_tokens: int = Field(default=8192, description="日程生成 LLM 的最大输出 token 数")
     activity_count_min: int = Field(default=8, description="每日活动数量下限")
     activity_count_max: int = Field(default=14, description="每日活动数量上限")
     wake_time: str = Field(default="08:30", description="角色苏醒时间 (HH:MM)")

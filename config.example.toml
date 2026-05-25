@@ -1,12 +1,12 @@
-# AutoPlanning 插件默认配置
+# AutoPlanning 插件默认配置示例
 
 [plugin]
 # 配置版本
-config_version = "0.3.0"
+config_version = "0.3.2"
+# 是否启用插件全部功能
+enabled = true
 
 [schedule]
-# 是否启用自动日程生成
-enabled = true
 # 启用日程的聊天流白名单
 # 支持:
 # - "all" 启用所有已知聊天流
@@ -19,8 +19,8 @@ allowed_streams = []
 stream_discovery_platform = "all_platforms"
 # 每日生成时间 (HH:MM)
 generation_time = "01:30"
-# 生成日程使用的模型任务名
-schedule_generation_model = "planner"
+# 生成日程使用的模型任务名，空字符串表示使用默认模型
+schedule_generation_model = ""
 # 人物设定来源: system | extra | both
 persona_source = "both"
 # 注入到日程生成 prompt 中的额外提示词
@@ -44,6 +44,6 @@ knowledge_search_limit = 5
 
 [inject]
 # 注入时间窗口 (分钟)
-inject_window_minutes = 120
+inject_window_minutes = 90
 # 最多注入活动数量
 max_injected_activities = 3

@@ -13,7 +13,7 @@ SECTION_DESCRIPTIONS: dict[str, str] = {
 
 FIELD_LABELS: dict[tuple[str, str], str] = {
     ("plugin", "config_version"): "配置版本",
-    ("schedule", "enabled"): "启用插件功能",
+    ("plugin", "enabled"): "启用插件功能",
     ("schedule", "allowed_streams"): "聊天流白名单",
     ("schedule", "stream_discovery_platform"): "扫描平台",
     ("schedule", "generation_time"): "每日生成时间",
@@ -34,7 +34,7 @@ FIELD_LABELS: dict[tuple[str, str], str] = {
 
 FIELD_HINTS: dict[tuple[str, str], str] = {
     ("plugin", "config_version"): "配置结构版本，用于插件升级时识别配置格式；通常不需要手动修改。",
-    ("schedule", "enabled"): "关闭后不会自动生成日程，也不会在回复中注入日程上下文。",
+    ("plugin", "enabled"): "关闭后不会自动生成日程，也不会在回复中注入日程上下文。",
     ("schedule", "allowed_streams"): (
         "启用日程的聊天流白名单。支持 all、session:<session_id>、"
         "<platform>:group:<group_id>、<platform>:private:<user_id>（eg:qq:group:123456）。空列表表示不启用任何聊天流。"
